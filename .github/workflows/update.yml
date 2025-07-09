@@ -1,0 +1,30 @@
+name: Update Twitter Data
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # toutes les 12h
+  workflow_dispatch:
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install snscrape
+      - name: Scrape tweets
+        run: |
+          snscrape --jsonl --max-results 1000 twitter-user "paulmidy" > paulmidy_tweets.json
+          snscrape --jsonl --max-results 1000 twitter-search "Paul Midy" > mentions_paulmidy.json
+      - name: Commit and push
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add *.json
+          git commit -m "Mise à jour automatique des données"
+          git push

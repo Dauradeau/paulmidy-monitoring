@@ -1,0 +1,7 @@
+streamlit
+snscrape
+pandas
+matplotlib
+seaborn
+nltk
+vaderSentiment
